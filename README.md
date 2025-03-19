@@ -18,7 +18,7 @@ You can download the **release version** of the game [here](https://github.com/H
 1. Install **[Godot Engine 4.4](https://godotengine.org/download)**
 2. Clone the repository:
    ```sh
-   git clone https://github.com/YOUR_USERNAME/KnightPlatformer.git
+   git clone https://github.com/Hernandez712/KnightPlatformer.git
    ```
 
 ## 📷 Screenshots
