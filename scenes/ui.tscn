@@ -16,9 +16,6 @@ mouse_filter = 2
 
 [node name="LivesContainer" type="HBoxContainer" parent="Control"]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 0.0
-anchor_right = 0.0
 offset_left = 10.0
 offset_top = 10.0
 offset_right = 200.0
@@ -30,4 +27,4 @@ visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.8, 0.2, 1)
 theme_override_font_sizes/font_size = 28
-text = "Lives: 3" 
+text = "Lives: 3"

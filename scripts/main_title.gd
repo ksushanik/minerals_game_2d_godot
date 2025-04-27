@@ -1,33 +1,53 @@
 extends Control
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	hide_ui()
+# Сигналы
+signal start_game
+signal quit_game
 
-func hide_ui():
-	var game_manager = get_tree().get_first_node_in_group("game_manager")
-	if game_manager:
-		game_manager.hide_ui()
+# Переменные
+var tween_running = false
+
+# При готовности
+func _ready():
+	# Из-за изменения структуры сцены, мы на одном уровне выше чем было
+	if get_parent().name == "MainTitle":
+		print("Main Title UI: Ready")
+	else:
+		push_error("Main Title UI: Unexpected parent " + get_parent().name)
+
+# Обработчик нажатия на кнопку "Начать игру"
+func _on_start_button_pressed():
+	if not tween_running:
+		tween_running = true
 		
-		if game_manager.has_node("LivesLabel"):
-			game_manager.get_node("LivesLabel").visible = false
-		
-		if is_instance_valid(game_manager.game_over_label):
-			game_manager.game_over_label.visible = false
+		# Создаем эффект анимации перехода
+		var tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(self, "modulate", Color(1, 1, 1, 0), 0.5)
+		tween.tween_callback(func(): 
+			# Запускаем первый уровень
+			get_tree().change_scene_to_file("res://scenes/level_0.tscn")
+			tween_running = false
+		)
+
+# Обработчик нажатия на кнопку "Выход"
+func _on_quit_button_pressed():
+	# Плавно затемняем экран перед выходом
+	var tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(self, "modulate", Color(1, 1, 1, 0), 0.5)
+	tween.tween_callback(func(): 
+		# Выходим из игры
+		get_tree().quit()
+	)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	pass
 
-func _on_start_button_pressed() -> void:
+func hide_ui():
 	var game_manager = get_tree().get_first_node_in_group("game_manager")
 	if game_manager:
-		game_manager.reset_game_state()
-		game_manager.set_current_level(0)
-		game_manager.show_ui()
-	
-	var mainScene = load("res://scenes/level_0.tscn")
-	get_tree().change_scene_to_packed(mainScene)
-
-func _on_quit_button_pressed() -> void:
-	get_tree().quit()
+		game_manager.hide_lives()
+		
+		# Больше не обращаемся напрямую к UI элементам
+		if game_manager.ui_manager:
+			game_manager.ui_manager.hide_game_over()

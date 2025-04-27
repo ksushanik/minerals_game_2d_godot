@@ -20,7 +20,13 @@ func _ready():
 		return
 	
 	if item_data != null and item_data is Resource and item_data.resource_path:
+		# Проверяем предмет через GameManager.collected_item_ids (для совместимости)
 		if game_manager.collected_item_ids.has(item_data.resource_path):
+			queue_free()
+			return
+			
+		# Проверяем предмет через InventorySystem
+		if game_manager.inventory_system and game_manager.inventory_system.has_item(item_data.resource_path):
 			queue_free()
 			return
 	else:
@@ -35,6 +41,28 @@ func _ready():
 		var collision_shape = $CollisionShape2D as CollisionShape2D
 		if collision_shape:
 			collision_shape.disabled = true
+
+# Проверка на наличие предмета в инвентаре при респауне игрока
+func check_if_already_collected():
+	if not game_manager or not item_data:
+		return false
+		
+	# Проверяем через обе системы (и старую, и новую)
+	var already_collected = false
+	
+	# Проверка через GameManager.collected_item_ids (для совместимости)
+	if item_data.resource_path and game_manager.collected_item_ids.has(item_data.resource_path):
+		already_collected = true
+		
+	# Проверка через InventorySystem
+	if not already_collected and game_manager.inventory_system and item_data.resource_path:
+		already_collected = game_manager.inventory_system.has_item(item_data.resource_path)
+		
+	if already_collected:
+		queue_free()
+		return true
+		
+	return false
 
 func _on_body_entered(body):
 	if not body.is_in_group("player") or item_data == null or not game_manager:

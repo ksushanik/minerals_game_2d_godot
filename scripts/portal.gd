@@ -105,8 +105,17 @@ func _on_body_entered(body: Node2D) -> void:
 			light_crystal_path = game_manager.get_meta("LIGHT_CRYSTAL_PATH")
 		elif "LIGHT_CRYSTAL_PATH" in game_manager:
 			light_crystal_path = game_manager.LIGHT_CRYSTAL_PATH
+		elif game_manager.light_crystal_resource:
+			light_crystal_path = game_manager.light_crystal_resource.resource_path
 			
-		if not game_manager.collected_item_ids.has(light_crystal_path):
+		# Используем inventory_system вместо прямого доступа к collected_item_ids
+		var has_light_crystal = false
+		if game_manager.inventory_system:
+			has_light_crystal = game_manager.inventory_system.has_item(light_crystal_path)
+		else:
+			print("Portal: ERROR - inventory_system not found in GameManager")
+			
+		if not has_light_crystal:
 			var hint_message = "Вы не можете войти сюда без Светящегося кристалла."
 			if game_manager.has_method("show_notification"):
 				game_manager.show_notification(hint_message, 3.0)

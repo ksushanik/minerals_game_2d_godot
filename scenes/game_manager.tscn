@@ -1,16 +1,36 @@
-[gd_scene load_steps=4 format=3 uid="uid://c4kj3faqxc14o"]
+[gd_scene load_steps=11 format=3 uid="uid://c4kj3faqxc14o"]
 
-[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_ux60w"]
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_acq2f"]
+[ext_resource type="Script" path="res://scripts/ui_manager.gd" id="2_netow"]
 [ext_resource type="FontFile" uid="uid://cv811ss2748ee" path="res://themes/pixi.ttf" id="2_slrox"]
-[ext_resource type="PackedScene" uid="uid://bj2373uvdbvty" path="res://scenes/inventory_ui.tscn" id="3_4dl4l"]
+[ext_resource type="PackedScene" uid="uid://cxw2dqkw7xv30" path="res://scenes/inventory/inventory_system.tscn" id="3_3mkh0"]
+[ext_resource type="PackedScene" uid="uid://bj2373uvdbvty" path="res://scenes/inventory_ui.tscn" id="4_1hmoc"]
+[ext_resource type="PackedScene" uid="uid://dw0q2cjjxg0l8" path="res://scenes/level_system.tscn" id="4_3xw4d"]
+[ext_resource type="PackedScene" uid="uid://bffx72a0m3vqn" path="res://scenes/player/player_state_manager.tscn" id="5_tg5hk"]
+[ext_resource type="Resource" uid="uid://c7a8cad0e1f2" path="res://resources/items/light_crystal.tres" id="6_kkq1t"]
+[ext_resource type="Resource" uid="uid://d4e5f6a7b8da" path="res://resources/items/iron.tres" id="7_y5tfo"]
+
+[sub_resource type="PackedScene" id="PackedScene_kg4y8"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("UIManager", "script", "Node"),
+"node_count": 1,
+"node_paths": [],
+"nodes": PackedInt32Array(-1, -1, 2, 0, -1, 1, 1, 0, 0),
+"variants": [ExtResource("2_netow")],
+"version": 3
+}
 
 [node name="GameManager" type="Node"]
-script = ExtResource("1_ux60w")
+script = ExtResource("1_acq2f")
+ui_manager_scene = SubResource("PackedScene_kg4y8")
+inventory_system_scene = ExtResource("3_3mkh0")
+level_system_scene = ExtResource("4_3xw4d")
+player_state_manager_scene = ExtResource("5_tg5hk")
+light_crystal_resource = ExtResource("6_kkq1t")
+iron_resource = ExtResource("7_y5tfo")
 game_over_font = ExtResource("2_slrox")
-game_over_font_size = 64
-game_over_offset_y = -50.0
-game_over_offset_x = -220.0
-notification_font = ExtResource("2_slrox")
-notification_font_color = Color(1, 1, 0, 1)
-notification_vertical_offset = 50.0
-inventory_scene = ExtResource("3_4dl4l")
+game_over_color = Color(1, 0.843137, 0, 1)
+inventory_scene = ExtResource("4_1hmoc")

@@ -56,19 +56,44 @@ func _on_body_entered(body):
 		if body.has_node("CollisionShape2D"):
 			body.get_node("CollisionShape2D").set_deferred("disabled", true)
 			
+		# Проверяем, является ли текущий уровень нулевым
+		var is_tutorial_level = false
+		var current_scene = get_tree().current_scene
+		if current_scene:
+			var scene_name = current_scene.name
+			var lowercase_name = scene_name.to_lower()
+			# Проверяем разные варианты именования нулевого уровня
+			if lowercase_name.contains("level_0") or lowercase_name == "level_0" or lowercase_name.contains("level0") or lowercase_name == "level0" or scene_name == "Level0":
+				is_tutorial_level = true
+				print("Killzone: Tutorial level detected! Player will be respawned without life loss.")
+		
+		# Если это нулевой уровень, просто перезагружаем сцену без уменьшения жизней
+		if is_tutorial_level:
+			print("Killzone: Reloading tutorial level in 1 second...")
+			await get_tree().create_timer(1.0).timeout
+			print("Killzone: Reloading tutorial level NOW!")
+			call_deferred("_reload_scene")
+			return
+				
 		# Уменьшаем количество жизней
-		if game_manager != null and game_manager.is_inside_tree():
+		if game_manager:
+			print("Killzone: Found game_manager, decreasing lives...")
 			var has_lives = await game_manager.decrease_lives()
+			print("Killzone: Decreased lives result: ", has_lives)
+			
 			if has_lives:
 				# Если жизни остались, перезагружаем текущую сцену через секунду
+				print("Killzone: Player has lives left, reloading scene in 1 second...")
 				await get_tree().create_timer(1.0).timeout
-				get_tree().reload_current_scene()
-			# Если жизней нет, обработка идет в GameManager через сигнал game_over
+				print("Killzone: Reloading current scene NOW!")
+				call_deferred("_reload_scene")
+			else:
+				print("Killzone: Player has no lives left, game over!")
 		else:
 			print("Killzone: No GameManager found, reloading scene directly")
 			# Если не нашли GameManager, просто перезагружаем сцену с небольшой задержкой
 			await get_tree().create_timer(1.0).timeout
-			get_tree().reload_current_scene()
+			call_deferred("_reload_scene")
 
 # Обработчик сигнала game_over от GameManager
 func _on_game_over():
@@ -83,6 +108,12 @@ func _on_game_over():
 	if get_tree():
 		# Переход на главное меню с задержкой
 		await get_tree().create_timer(2.0).timeout  # Задержка для отображения Game Over
+		
+		# Явно скрываем Game Over перед сменой сцены
+		if game_manager and game_manager.ui_manager:
+			game_manager.ui_manager.hide_game_over()
+			# Даем небольшую задержку, чтобы анимация скрытия отработала
+			await get_tree().create_timer(0.4).timeout
 		
 		# Еще раз проверяем, что get_tree() валиден
 		if get_tree():
@@ -101,3 +132,27 @@ func flash_damage():
 		var tween = create_tween()
 		tween.tween_property(flash_rect, "color", Color(0, 0, 0, 0), 0.5)
 		tween.play()
+
+# Отдельная функция для перезагрузки сцены
+func _reload_scene():
+	print("Killzone: Actually reloading scene now...")
+	# Отправляем сигнал GameManager'у о необходимости обновить свет после перезагрузки
+	if game_manager and game_manager.has_method("mark_for_light_update"):
+		game_manager.mark_for_light_update()
+		print("Killzone: Requested light update from GameManager")
+	
+	get_tree().reload_current_scene()
+
+# Обновляем состояние света игрока после перезагрузки уровня
+func _update_player_light():
+	print("Killzone: Updating player light state after reload...")
+	# Находим GameManager, если он еще не найден
+	if not game_manager:
+		find_game_manager()
+	
+	# Обновляем состояние света
+	if game_manager and game_manager.player_state_manager:
+		game_manager.player_state_manager.update_player_light_state()
+		print("Killzone: Player light state updated successfully")
+	else:
+		print("Killzone: Could not update player light, GameManager or PlayerStateManager not found")

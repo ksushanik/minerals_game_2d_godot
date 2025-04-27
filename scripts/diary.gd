@@ -29,16 +29,10 @@ func _ready():
 	find_game_manager()
 
 func find_game_manager():
-	if has_node("/root/GameManager"):
-		game_manager = get_node("/root/GameManager")
+	var manager = get_tree().get_first_node_in_group("game_manager")
+	if manager:
+		game_manager = manager
 		return true
-		
-	if get_tree():
-		var manager = get_tree().get_first_node_in_group("game_manager")
-		if manager:
-			game_manager = manager
-			return true
-	
 	return false
 
 func ensure_dialog_resource_loaded():
@@ -101,16 +95,15 @@ func show_dialog(dialog_resource: Resource):
 	dialog_shown = true
 	can_interact = false
 	
-	if game_manager and game_manager.has_method("set_dialog_active"):
-		game_manager.set_dialog_active(true)
+	game_manager.set_dialog_active(true)
 	
 	if interaction_hint:
 		interaction_hint.visible = false
 		
 	current_dialog = diary_dialog_scene.instantiate()
 	
-	if game_manager.ui_layer:
-		game_manager.ui_layer.add_child(current_dialog)
+	if game_manager.ui_manager:
+		game_manager.ui_manager.add_to_ui_layer(current_dialog)
 		
 		if not current_dialog.dialog_closed.is_connected(_on_dialog_closed):
 			current_dialog.dialog_closed.connect(_on_dialog_closed)
@@ -121,6 +114,7 @@ func show_dialog(dialog_resource: Resource):
 		set_process(false)
 		set_process_input(false)
 	else:
+		print("Diary: ERROR - ui_manager not found in game_manager")
 		dialog_shown = false
 		can_interact = true
 		current_dialog = null
@@ -131,7 +125,7 @@ func _on_dialog_closed():
 
 	dialog_finished.emit()
 	
-	if game_manager and game_manager.has_method("set_dialog_active"):
+	if game_manager:
 		game_manager.set_dialog_active(false)
 
 	call_deferred("_restore_after_dialog")

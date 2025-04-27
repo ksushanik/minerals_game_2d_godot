@@ -37,13 +37,16 @@ func _ready():
 
 	if has_node("/root/GameManager"):
 		game_manager = get_node("/root/GameManager")
-		if not inventory_closed.is_connected(game_manager._on_inventory_closed):
-			inventory_closed.connect(game_manager._on_inventory_closed)
 
 # Функция для установки начального смещения разделителя
 func set_initial_split_offset(offset: int):
 	if h_split_container:
 		h_split_container.split_offset = offset
+
+# Метод для подключения сигнала закрытия инвентаря к InventorySystem
+func connect_close_signal(inventory_system):
+	if inventory_system and inventory_system.has_method("_on_inventory_closed"):
+		inventory_closed.connect(inventory_system._on_inventory_closed)
 
 # Вызывается извне для показа и заполнения инвентаря
 # Принимает массив РЕСУРСОВ ItemData собранных предметов

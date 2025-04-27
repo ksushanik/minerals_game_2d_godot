@@ -3,6 +3,7 @@ extends CanvasLayer
 @onready var lives_label = $Control/LivesContainer/LivesLabel
 var game_manager = null
 var warn_count = 0  # Счетчик предупреждений
+var ui_manager_found = false  # Флаг наличия UIManager
 
 func _ready():
 	# Находим GameManager
@@ -15,6 +16,14 @@ func _ready():
 		print("UI: On main menu, hiding lives")
 		return
 	
+	# Проверяем наличие UIManager
+	if game_manager and game_manager.has_node("UIManager"):
+		ui_manager_found = true
+		print("UI: Found UIManager, disabling local UI")
+		if lives_label:
+			lives_label.visible = false
+		return
+	
 	# Если GameManager не найден, скрываем метку жизней
 	if not game_manager and lives_label:
 		lives_label.visible = false
@@ -24,6 +33,11 @@ func _ready():
 func _process(_delta):
 	# На главном экране всегда скрываем UI
 	if is_on_main_menu() and lives_label and lives_label.visible:
+		lives_label.visible = false
+		return
+	
+	# Если найден UIManager, локальный UI не нужен
+	if ui_manager_found and lives_label and lives_label.visible:
 		lives_label.visible = false
 		return
 	
@@ -39,8 +53,9 @@ func _process(_delta):
 	if game_manager == null and Engine.get_frames_drawn() % 60 == 0:
 		find_game_manager()
 	
-	# Обновляем UI, только если GameManager найден и валиден и мы не на главном экране
-	if game_manager != null and game_manager.is_inside_tree() and not is_on_main_menu():
+	# Обновляем UI, только если GameManager найден и валиден, мы не на главном экране 
+	# и не найден UIManager
+	if game_manager != null and game_manager.is_inside_tree() and not is_on_main_menu() and not ui_manager_found:
 		update_lives_display()
 
 func update_lives_display():
@@ -66,11 +81,15 @@ func update_lives_display():
 
 # Обработчик сигнала изменения видимости жизней
 func _on_lives_visibility_changed(visible):
-	if lives_label:
+	if lives_label and not ui_manager_found:
 		lives_label.visible = visible
 		print("UI: Lives visibility changed to", visible)
 
 func update_ui():
+	# Если найден UIManager, выходим
+	if ui_manager_found:
+		return
+
 	if not game_manager:
 		print("UI: update_ui called, but GameManager not found.")
 		# Если нет GameManager, скрываем UI
@@ -110,8 +129,17 @@ func find_game_manager():
 		print("UI: Found GameManager in scene")
 		game_manager = manager
 		
-		# Обновляем дисплей, если нашли GameManager
-		update_lives_display()
+		# Проверяем наличие UIManager
+		if manager.has_node("UIManager"):
+			ui_manager_found = true
+			print("UI: Found UIManager, disabling local UI")
+			if lives_label:
+				lives_label.visible = false
+			return
+		
+		# Обновляем дисплей, если нашли GameManager и нет UIManager
+		if not ui_manager_found:
+			update_lives_display()
 
 		# Подключаемся к сигналам изменения видимости
 		if not game_manager.lives_visibility_changed.is_connected(_on_lives_visibility_changed):
@@ -127,6 +155,6 @@ func find_game_manager():
 # Проверка, находимся ли мы на главном экране
 func is_on_main_menu() -> bool:
 	var current_scene = get_tree().current_scene
-	if current_scene and current_scene.name == "MainTitle":
+	if current_scene and (current_scene.name == "MainTitle" or current_scene.name.begins_with("MainTitle")):
 		return true
 	return false

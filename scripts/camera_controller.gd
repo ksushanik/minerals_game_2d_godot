@@ -18,16 +18,15 @@ func _ready():
 		# Можно отключить камеру, если игрок не найден
 		# set_process(false)
 		
-	# Находим GameManager
-	game_manager = get_node_or_null("/root/GameManager")
+	# Находим GameManager через группу
+	game_manager = get_tree().get_first_node_in_group("game_manager")
 	if not game_manager:
 		print("Camera Controller: ERROR - GameManager not found!")
 
 func _process(_delta):
-	# <<< ПРОВЕРКА НА СМЕРТЬ >>>
-	if is_instance_valid(game_manager) and game_manager.is_player_dead:
+	# Проверка на смерть игрока через PlayerStateManager
+	if is_instance_valid(game_manager) and game_manager.player_state_manager and game_manager.player_state_manager.is_player_dead():
 		return # Прекращаем слежение за камерой
-	# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	# Если игрок найден и валиден, плавно двигаем камеру к нему
 	if is_instance_valid(player):

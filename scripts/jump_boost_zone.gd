@@ -73,10 +73,18 @@ func check_and_apply_boost():
 		
 	# Проверяем, есть ли углерод в инвентаре
 	var has_carbon = false
-	for item in game_manager.collected_items:
-		if item.resource_path == carbon_resource.resource_path or item.item_name == carbon_resource.item_name:
-			has_carbon = true
-			break
+	
+	# Используем inventory_system вместо прямого доступа к collected_items в GameManager
+	if game_manager.inventory_system:
+		# Получаем список предметов из inventory_system
+		var inventory_items = game_manager.inventory_system.get_all_items()
+		
+		for item in inventory_items:
+			if item.resource_path == carbon_resource.resource_path or item.item_name == carbon_resource.item_name:
+				has_carbon = true
+				break
+	else:
+		print("JumpBoostZone: ERROR - inventory_system not found in GameManager")
 			
 	if has_carbon:
 		# Усиливаем прыжок

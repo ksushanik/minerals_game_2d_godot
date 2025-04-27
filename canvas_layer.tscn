@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://ioklp1y0l7mk"]
-
-[ext_resource type="PackedScene" uid="uid://dkp2d23fnqtsl" path="res://scenes/main_title.tscn" id="1_dokr8"]
-
-[node name="CanvasLayer" type="CanvasLayer"]
-
-[node name="MainTitle" parent="." instance=ExtResource("1_dokr8")]
