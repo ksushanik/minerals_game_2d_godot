@@ -91,38 +91,28 @@ func set_dark_level(dark: bool):
 
 # Отдельная функция для обновления света игрока
 func _update_player_light():
-	# Увеличиваем задержку для полной инициализации сцены
-	await get_tree().create_timer(0.5).timeout
-	
-	print("LevelController: Updating player light state...")
+	# Уменьшенная задержка для инициализации сцены
+	await get_tree().create_timer(0.3).timeout
 	
 	# Сначала проверяем через GameManager
 	if game_manager and game_manager.player_state_manager:
 		game_manager.player_state_manager.update_player_light_state()
-		print("LevelController: Player light state updated via PlayerStateManager")
 	
 	# Дополнительная прямая проверка для надежности
 	if is_dark_level:
-		print("LevelController: This is a dark level, checking light crystal...")
-		
 		# Проверяем наличие светового кристалла
 		var has_light_crystal = false
 		if game_manager and game_manager.inventory_system and game_manager.light_crystal_resource:
 			has_light_crystal = game_manager.inventory_system.has_item(
 				game_manager.light_crystal_resource.resource_path
 			)
-			print("LevelController: Player has light crystal: ", has_light_crystal)
 			
 			# Если есть кристалл, включаем свет
 			if has_light_crystal:
-				# Небольшая дополнительная задержка
-				await get_tree().create_timer(0.1).timeout
-				
 				# Находим игрока и его свет
 				var player = get_tree().get_first_node_in_group("player")
 				if player and player.has_node("PointLight2D"):
 					var player_light = player.get_node("PointLight2D")
-					print("LevelController: Directly enabling player light")
 					player_light.visible = true
 					player_light.enabled = true
 					

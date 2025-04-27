@@ -110,7 +110,7 @@ func _ready():
 	# Создаем таймер для обновления света
 	light_update_timer = Timer.new()
 	light_update_timer.one_shot = true
-	light_update_timer.wait_time = 0.8
+	light_update_timer.wait_time = 0.5
 	light_update_timer.timeout.connect(_on_light_update_timer_timeout)
 	add_child(light_update_timer)
 
@@ -362,35 +362,27 @@ func mark_for_light_update():
 	
 # Обработчик таймера обновления света
 func _on_light_update_timer_timeout():
-	print("GameManager: Updating player light after level reload")
-	
 	# Проверяем, темный ли это уровень
 	var is_dark_level = false
 	var level_controller = get_tree().get_first_node_in_group("level_controller")
 	if level_controller and level_controller.has_method("is_dark_level"):
 		is_dark_level = level_controller.is_dark_level
-		print("GameManager: Current level dark state:", is_dark_level)
 	
 	# Проверяем наличие светового кристалла
 	var has_light_crystal = false
 	if inventory_system and light_crystal_resource:
 		has_light_crystal = inventory_system.has_item(light_crystal_resource.resource_path)
-		print("GameManager: Player has light crystal:", has_light_crystal)
 	
 	# Обновляем состояние света через PlayerStateManager
 	if player_state_manager:
 		player_state_manager.update_player_light_state()
-		print("GameManager: Player light state updated successfully")
 	
 	# Дополнительная прямая проверка для надежности
 	if is_dark_level and has_light_crystal:
-		print("GameManager: Direct light management - dark level and has crystal")
-		
 		# Находим игрока и его свет
 		var player = get_tree().get_first_node_in_group("player")
 		if player and player.has_node("PointLight2D"):
 			var player_light = player.get_node("PointLight2D")
-			print("GameManager: Directly enabling player light")
 			player_light.visible = true
 			player_light.enabled = true
 			
@@ -399,27 +391,22 @@ func _on_light_update_timer_timeout():
 			tween.tween_property(player_light, "energy", 1.2, 0.3)
 			tween.tween_property(player_light, "energy", 1.0, 0.2)
 		else:
-			print("GameManager: PointLight2D node not found on player")
 			# Если игрок или свет не найден, попробуем снова через некоторое время
-			var retry_timer = get_tree().create_timer(0.3)
+			var retry_timer = get_tree().create_timer(0.2)
 			await retry_timer.timeout
 			
 			player = get_tree().get_first_node_in_group("player")
 			if player and player.has_node("PointLight2D"):
 				var player_light = player.get_node("PointLight2D")
-				print("GameManager: Retry - enabling player light")
 				player_light.visible = true
 				player_light.enabled = true
 				
 				var tween = create_tween()
 				tween.tween_property(player_light, "energy", 1.2, 0.3)
 				tween.tween_property(player_light, "energy", 1.0, 0.2)
-			else:
-				print("GameManager: Retry failed - PointLight2D still not found on player")
 	
 	# Запрашиваем обновление от LevelController для дополнительной надежности
 	if level_controller:
-		print("GameManager: Requested light update from level controller")
 		level_controller._update_player_light()
 	
 	light_update_timer.stop()
