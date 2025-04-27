@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://n4t6ux4sy31g"]
+
+[ext_resource type="Script" path="res://scripts/ItemData.gd" id="1_58r3y"]
+
+[resource]
+script = ExtResource("1_58r3y")
+item_name = "Железо (Fe)"
+item_description = "Компонент для создания пирита. Железо (Fe) - металлический элемент, имеющий серебристо-серый цвет с красноватым оттенком. Является основным строительным материалом для многих минералов, включая пирит (FeS₂)."

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b6mh3gijf77t4"]
+
+[ext_resource type="Script" path="res://scripts/ItemData.gd" id="1_q3kws"]
+[ext_resource type="Texture2D" path="res://assets/sprites/minerals/cristals_green.png" id="2_6sxqc"]
+
+[resource]
+script = ExtResource("1_q3kws")
+item_name = "Углерод"
+item_description = "Летучий элемент, который временно увеличивает высоту прыжка. Идеально подходит для преодоления высоких препятствий."
+item_icon = ExtResource("2_6sxqc")
+dialogue_pages = Array[String]([]) 

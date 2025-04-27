@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://df4ldye538j6x"]
+
+[ext_resource type="Script" path="res://scripts/ItemData.gd" id="1_njty6"]
+
+[resource]
+script = ExtResource("1_njty6")
+item_name = "Сера (S)"
+item_description = "Компонент для создания пирита. Сера (S) - неметаллический элемент желтого цвета с характерным запахом. В пирите (FeS₂) две частицы серы соединяются с одной частицей железа."

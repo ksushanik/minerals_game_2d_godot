@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://vqr7j6bjk8my"]
+
+[ext_resource type="Script" path="res://scripts/ItemData.gd" id="1_xxxx"]
+
+[resource]
+script = ExtResource("1_xxxx")
+item_name = "Кремний (Si)"
+item_description = "Атомарный кремний, необходим для создания халцедона."
+dialogue_pages = Array[String]([])

@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://b3e0oan1ifhs7"]
+
+[ext_resource type="Script" path="res://scripts/portal.gd" id="1_ethbi"]
+[ext_resource type="Texture2D" uid="uid://d018pxhtd4dwa" path="res://assets/sprites/pxArt.png" id="2_uni3j"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c0bh7"]
+size = Vector2(12, 14)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_abcde"]
+radius = 66.0303
+
+[node name="Portal" type="Area2D"]
+collision_layer = 32
+collision_mask = 2
+script = ExtResource("1_ethbi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, -13)
+shape = SubResource("RectangleShape2D_c0bh7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -20)
+scale = Vector2(1.45312, 1.45312)
+texture = ExtResource("2_uni3j")
+
+[node name="ProximityDetector" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 2
+
+[node name="ProximityCollisionShape" type="CollisionShape2D" parent="ProximityDetector"]
+position = Vector2(-1, -18)
+shape = SubResource("CircleShape2D_abcde")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_entered" from="ProximityDetector" to="." method="_on_ProximityDetector_body_entered"]
+[connection signal="body_exited" from="ProximityDetector" to="." method="_on_ProximityDetector_body_exited"]

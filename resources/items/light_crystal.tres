@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://c7a8cad0e1f2"]
+
+[ext_resource type="Script" path="res://scripts/ItemData.gd" id="1_light_crystal_script"]
+[ext_resource type="Texture2D" uid="uid://dn0eoca2olwr0" path="res://assets/sprites/minerals/cristals_red.png" id="2_light_crystal_icon"]
+
+[resource]
+script = ExtResource("1_light_crystal_script")
+item_name = "Светящийся кристалл"
+item_description = "Этот кристалл излучает мягкий свет, способный разогнать тьму."
+dialogue_pages = Array[String](["Стало светлее!"])
+item_icon = ExtResource("2_light_crystal_icon")

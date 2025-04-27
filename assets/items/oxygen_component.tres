@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://ckigweyftoysh"]
+
+[ext_resource type="Script" path="res://scripts/ItemData.gd" id="1_yyyy"]
+
+[resource]
+script = ExtResource("1_yyyy")
+item_name = "Кислород (O)"
+item_description = "Атомарный кислород, необходим для создания халцедона."
+dialogue_pages = Array[String]([])

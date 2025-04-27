@@ -1,0 +1,79 @@
+[gd_scene load_steps=2 format=3 uid="uid://bj2373uvdbvty"]
+
+[ext_resource type="Script" path="res://scripts/inventory_ui.gd" id="1_asdfg"]
+
+[node name="InventoryUI" type="PanelContainer"]
+process_mode = 1
+custom_minimum_size = Vector2(600, 400)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_asdfg")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Инвентарь"
+horizontal_alignment = 1
+
+[node name="HSplitContainer" type="HSplitContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 0
+split_offset = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ItemList" type="ItemList" parent="MarginContainer/VBoxContainer/HSplitContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+allow_reselect = true
+
+[node name="DescriptionPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HSplitContainer/DescriptionPanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="DescriptionDisplay" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HSplitContainer/DescriptionPanel/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+text = "Выберите предмет слева для описания..."
+scroll_active = false
+autowrap_mode = 2
+
+[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Закрыть"
+
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/HSplitContainer/ScrollContainer/ItemList" to="." method="_on_item_selected"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://c4kj3faqxc14o"]
+
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_ux60w"]
+[ext_resource type="FontFile" uid="uid://cv811ss2748ee" path="res://themes/pixi.ttf" id="2_slrox"]
+[ext_resource type="PackedScene" uid="uid://bj2373uvdbvty" path="res://scenes/inventory_ui.tscn" id="3_4dl4l"]
+
+[node name="GameManager" type="Node"]
+script = ExtResource("1_ux60w")
+game_over_font = ExtResource("2_slrox")
+game_over_font_size = 64
+game_over_offset_y = -50.0
+game_over_offset_x = -220.0
+notification_font = ExtResource("2_slrox")
+notification_font_color = Color(1, 1, 0, 1)
+notification_vertical_offset = 50.0
+inventory_scene = ExtResource("3_4dl4l")

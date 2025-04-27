@@ -1,0 +1,67 @@
+[gd_scene load_steps=8 format=3 uid="uid://c8u8eqkoxhj0i"]
+
+[ext_resource type="Script" path="res://scripts/collectible_item.gd" id="1_ygfjc"]
+[ext_resource type="Texture2D" uid="uid://dduexr2jujggc" path="res://assets/sprites/minerals/cristals_green.png" id="2_xpjgf"]
+[ext_resource type="Resource" uid="uid://b6mh3gijf77t4" path="res://resources/items/carbon.tres" id="3_vyil7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ug2nr"]
+radius = 15.0
+
+[sub_resource type="Animation" id="Animation_gj7ri"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_fjwtw"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -5), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_w52qo"]
+_data = {
+"RESET": SubResource("Animation_gj7ri"),
+"idle": SubResource("Animation_fjwtw")
+}
+
+[node name="CarbonCrystal" type="Area2D" groups=["coins"]]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_ygfjc")
+item_data = ExtResource("3_vyil7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_xpjgf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ug2nr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_w52qo")
+}
+autoplay = "idle"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

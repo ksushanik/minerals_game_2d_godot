@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://d4e5f6a7b8da"]
+
+[ext_resource type="Script" path="res://scripts/ItemData.gd" id="1_iron_script"]
+[ext_resource type="Texture2D" uid="uid://21bniw2qrb15" path="res://assets/sprites/minerals/cristals_gray.png" id="2_iron_icon"]
+
+[resource]
+script = ExtResource("1_iron_script")
+item_name = "Железо"
+item_description = "Тяжелый, но прочный элемент. Возможно, он придаст вам сил, чтобы сдвинуть что-то тяжелое."
+dialogue_pages = Array[String]([])
+item_icon = ExtResource("2_iron_icon")

@@ -1,0 +1,123 @@
+[gd_scene load_steps=17 format=3 uid="uid://v7bd4c8e8bc2"]
+
+[ext_resource type="Script" path="res://scripts/professor.gd" id="1_nglxx"]
+[ext_resource type="Script" path="res://scripts/ItemData.gd" id="2_hjsbf"]
+[ext_resource type="Theme" uid="uid://b7a8gq1o2d4e5" path="res://themes/game_ui_theme.tres" id="3_llsfn"]
+[ext_resource type="Texture2D" uid="uid://cryxq134t8hqq" path="res://assets/sprites/professor/prof-Sheet.png" id="4_dmh6h"]
+
+[sub_resource type="Resource" id="Resource_7kwyn"]
+script = ExtResource("2_hjsbf")
+item_name = "Задание профессора-минералога"
+item_description = ""
+dialogue_pages = Array[String]([])
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_grs4c"]
+radius = 13.0
+height = 28.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o5m6q"]
+atlas = ExtResource("4_dmh6h")
+region = Rect2(0, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_31wyl"]
+atlas = ExtResource("4_dmh6h")
+region = Rect2(320, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_inf7r"]
+atlas = ExtResource("4_dmh6h")
+region = Rect2(640, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eh3yj"]
+atlas = ExtResource("4_dmh6h")
+region = Rect2(960, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qukh5"]
+atlas = ExtResource("4_dmh6h")
+region = Rect2(1280, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h5f5a"]
+atlas = ExtResource("4_dmh6h")
+region = Rect2(1600, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ovu0m"]
+atlas = ExtResource("4_dmh6h")
+region = Rect2(1920, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eb013"]
+atlas = ExtResource("4_dmh6h")
+region = Rect2(2240, 0, 320, 320)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_u5tjr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o5m6q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_31wyl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_inf7r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eh3yj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qukh5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h5f5a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ovu0m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eb013")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dialog"]
+radius = 29.1548
+
+[node name="Professor" type="CharacterBody2D" groups=["professor"]]
+collision_mask = 3
+script = ExtResource("1_nglxx")
+dialog_data = SubResource("Resource_7kwyn")
+
+[node name="PhysicsCollisionShape2D" type="CollisionShape2D" parent="." groups=["professor"]]
+position = Vector2(0, -18)
+shape = SubResource("CapsuleShape2D_grs4c")
+
+[node name="InteractionHint" type="Label" parent="."]
+visible = false
+custom_minimum_size = Vector2(5, 5)
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = -34.0
+theme = ExtResource("3_llsfn")
+theme_override_font_sizes/font_size = 10
+text = "Нажмите Enter"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(1, -20)
+scale = Vector2(0.142969, 0.142969)
+sprite_frames = SubResource("SpriteFrames_u5tjr")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="DialogueArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="DialogueCollisionShape" type="CollisionShape2D" parent="DialogueArea"]
+position = Vector2(0, -18)
+shape = SubResource("CircleShape2D_dialog")
+
+[connection signal="body_entered" from="DialogueArea" to="." method="_on_body_entered"]
+[connection signal="body_exited" from="DialogueArea" to="." method="_on_body_exited"]

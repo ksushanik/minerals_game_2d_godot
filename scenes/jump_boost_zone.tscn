@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfcnm518jkttt"]
+
+[ext_resource type="Script" path="res://scripts/jump_boost_zone.gd" id="1_ljrby"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3a4v3"]
+size = Vector2(100, 40)
+
+[node name="JumpBoostZone" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_ljrby")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_3a4v3")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"] 

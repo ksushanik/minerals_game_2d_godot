@@ -1,0 +1,55 @@
+[gd_scene load_steps=7 format=3 uid="uid://d3qvb34w4kaod"]
+
+[ext_resource type="Script" path="res://scripts/diary.gd" id="1_c36hj"]
+[ext_resource type="Script" path="res://scripts/ItemData.gd" id="2_hcuib"]
+[ext_resource type="Theme" uid="uid://b7a8gq1o2d4e5" path="res://themes/game_ui_theme.tres" id="3_fcadr"]
+[ext_resource type="Texture2D" uid="uid://wvutlgn0km0d" path="res://assets/sprites/pixel books/laser-book-pixilart.png" id="4_rpkne"]
+
+[sub_resource type="Resource" id="Resource_v3xbn"]
+script = ExtResource("2_hcuib")
+item_name = "Дневник профессора-минералога"
+item_description = ""
+dialogue_pages = Array[String](["Дневник профессора Минералогии:", "День 21: Я наконец-то получил информацию о местонахождении редкого артефакта \"Кристалл Вечности\". Согласно легенде, он обладает невероятной силой преобразования материи.", "День 22: Отправляюсь на поиски артефакта. Путь будет непростым, но результат стоит затраченных усилий.", "День 23: Встретил странные препятствия. Похоже, древние хранители не хотят, чтобы кто-то добрался до артефакта.", "Последняя запись: Я почти у цели, но чувствую опасность. Если кто-то найдет этот дневник, пожалуйста, не пытайтесь последовать за мной. Это может быть крайне опасно!"])
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6tewv"]
+radius = 29.1548
+
+[node name="Diary" type="CharacterBody2D" groups=["diary"]]
+collision_mask = 3
+script = ExtResource("1_c36hj")
+dialog_data = SubResource("Resource_v3xbn")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.9, 0.7, 1)
+position = Vector2(0, -16)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_rpkne")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(0, -16)
+scale = Vector2(0.75, 0.75)
+polygon = PackedVector2Array(-13, -16, 13, -16, 13, 16, -13, 16)
+
+[node name="InteractionHint" type="Label" parent="."]
+visible = false
+custom_minimum_size = Vector2(5, 5)
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = -34.0
+theme = ExtResource("3_fcadr")
+theme_override_font_sizes/font_size = 10
+text = "Нажмите Enter"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DialogueArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="DialogueCollisionShape" type="CollisionShape2D" parent="DialogueArea"]
+position = Vector2(0, -16)
+shape = SubResource("CircleShape2D_6tewv")
+
+[connection signal="body_entered" from="DialogueArea" to="." method="_on_body_entered"]
+[connection signal="body_exited" from="DialogueArea" to="." method="_on_body_exited"]

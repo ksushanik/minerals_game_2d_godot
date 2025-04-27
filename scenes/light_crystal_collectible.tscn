@@ -1,0 +1,68 @@
+[gd_scene load_steps=8 format=3 uid="uid://d8faf0a1b2c3"]
+
+[ext_resource type="Script" path="res://scripts/collectible_item.gd" id="1_light_coin_script"]
+[ext_resource type="Resource" uid="uid://c7a8cad0e1f2" path="res://resources/items/light_crystal.tres" id="2_light_resource"]
+[ext_resource type="Texture2D" uid="uid://dn0eoca2olwr0" path="res://assets/sprites/minerals/cristals_red.png" id="3_light_coin_tex"]
+
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_light"]
+radius = 15.0
+
+[sub_resource type="Animation" id="Animation_light_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_light_idle"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -5), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_light"]
+_data = {
+"RESET": SubResource("Animation_light_reset"),
+"idle": SubResource("Animation_light_idle")
+}
+
+[node name="LightCrystalCollectible" type="Area2D" groups=["coins"]]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_light_coin_script")
+item_data = ExtResource("2_light_resource")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_light_coin_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_light")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_light")
+}
+autoplay = "idle"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

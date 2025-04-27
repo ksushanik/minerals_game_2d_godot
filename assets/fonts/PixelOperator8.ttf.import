@@ -2,7 +2,7 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://dbjl1e6kdxpl6"
+uid="uid://pxst33l7gywr"
 path="res://.godot/imported/PixelOperator8.ttf-6f9f01766aff16f52046b880ffb8d367.fontdata"
 
 [deps]
@@ -13,14 +13,15 @@ dest_files=["res://.godot/imported/PixelOperator8.ttf-6f9f01766aff16f52046b880ff
 [params]
 
 Rendering=null
-antialiasing=1
+antialiasing=0
 generate_mipmaps=false
+disable_embedded_bitmaps=true
 multichannel_signed_distance_field=false
 msdf_pixel_range=8
 msdf_size=48
 allow_system_fallback=true
 force_autohinter=false
-hinting=1
+hinting=0
 subpixel_positioning=1
 oversampling=0.0
 Fallbacks=null

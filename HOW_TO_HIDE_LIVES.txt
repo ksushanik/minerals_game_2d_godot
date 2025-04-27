@@ -1,0 +1,75 @@
+КАК СКРЫТЬ ИНТЕРФЕЙС ЖИЗНЕЙ И СЧЕТЧИК МОНЕТ
+
+В этой игре вы можете управлять видимостью счетчика жизней и счетчика монет на разных уровнях. 
+
+МЕТОД 1 (РЕКОМЕНДУЕМЫЙ): ИСПОЛЬЗОВАНИЕ КОНТРОЛЛЕРА УРОВНЯ
+
+1. Добавьте узел "LevelController" в сцену вашего уровня:
+   - Перетащите файл "level_controller.tscn" из папки scenes в дерево сцены вашего уровня
+   - ИЛИ создайте новый узел Node и прикрепите к нему скрипт "level_controller.gd"
+
+2. В инспекторе настройте параметр видимости:
+   - Show UI: true (показывать интерфейс) или false (скрыть интерфейс)
+
+МЕТОД 2: УПРАВЛЕНИЕ ЧЕРЕЗ ПРЯМОЙ ДОСТУП К УЗЛАМ
+
+Вы можете напрямую управлять видимостью узлов интерфейса:
+
+```gdscript
+# Получаем GameManager сцены
+var game_manager = get_tree().get_first_node_in_group("game_manager")
+
+if game_manager:
+    # Скрыть счетчик жизней
+    if game_manager.has_node("LivesLabel"):
+        game_manager.get_node("LivesLabel").visible = false
+        
+    # Скрыть счетчик монет
+    if game_manager.has_node("ScoreLabel"):
+        game_manager.get_node("ScoreLabel").visible = false
+        
+    # Показать счетчик жизней
+    if game_manager.has_node("LivesLabel"):
+        game_manager.get_node("LivesLabel").visible = true
+        
+    # Показать счетчик монет
+    if game_manager.has_node("ScoreLabel"):
+        game_manager.get_node("ScoreLabel").visible = true
+```
+
+Пример использования в скрипте:
+
+```gdscript
+func _ready():
+    # Найти GameManager
+    var game_manager = get_tree().get_first_node_in_group("game_manager")
+    
+    if game_manager:
+        # Скрываем интерфейс в начале уровня
+        if game_manager.has_node("LivesLabel"):
+            game_manager.get_node("LivesLabel").visible = false
+        if game_manager.has_node("ScoreLabel"):
+            game_manager.get_node("ScoreLabel").visible = false
+    
+    # Код для вашего уровня...
+```
+
+ВАЖНЫЕ ЗАМЕЧАНИЯ:
+
+1. Система жизней и счетчик монет продолжают работать, даже если их интерфейс скрыт
+2. При переходе между уровнями интерфейс будет отображаться по умолчанию, если не использовать LevelController
+3. GameManager теперь не является глобальным синглтоном, а добавляется непосредственно на каждый уровень
+4. Главное меню не имеет GameManager, поэтому там не нужно ничего скрывать
+
+Проверка видимости узлов:
+
+```gdscript
+# Проверить, виден ли счетчик жизней
+var game_manager = get_tree().get_first_node_in_group("game_manager")
+if game_manager and game_manager.has_node("LivesLabel"):
+    var is_lives_visible = game_manager.get_node("LivesLabel").visible
+    
+# Проверить, виден ли счетчик монет
+if game_manager and game_manager.has_node("ScoreLabel"):
+    var is_score_visible = game_manager.get_node("ScoreLabel").visible
+``` 
