@@ -1,10 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://c4kj3faqxc14o"]
+[gd_scene load_steps=9 format=3 uid="uid://c4kj3faqxc14o"]
 
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_acq2f"]
 [ext_resource type="Script" path="res://scripts/ui_manager.gd" id="2_netow"]
-[ext_resource type="FontFile" uid="uid://cv811ss2748ee" path="res://themes/pixi.ttf" id="2_slrox"]
 [ext_resource type="PackedScene" uid="uid://cxw2dqkw7xv30" path="res://scenes/inventory/inventory_system.tscn" id="3_3mkh0"]
-[ext_resource type="PackedScene" uid="uid://bj2373uvdbvty" path="res://scenes/inventory_ui.tscn" id="4_1hmoc"]
 [ext_resource type="PackedScene" uid="uid://dw0q2cjjxg0l8" path="res://scenes/level_system.tscn" id="4_3xw4d"]
 [ext_resource type="PackedScene" uid="uid://bffx72a0m3vqn" path="res://scenes/player/player_state_manager.tscn" id="5_tg5hk"]
 [ext_resource type="Resource" uid="uid://c7a8cad0e1f2" path="res://resources/items/light_crystal.tres" id="6_kkq1t"]
@@ -31,6 +29,3 @@ level_system_scene = ExtResource("4_3xw4d")
 player_state_manager_scene = ExtResource("5_tg5hk")
 light_crystal_resource = ExtResource("6_kkq1t")
 iron_resource = ExtResource("7_y5tfo")
-game_over_font = ExtResource("2_slrox")
-game_over_color = Color(1, 0.843137, 0, 1)
-inventory_scene = ExtResource("4_1hmoc")

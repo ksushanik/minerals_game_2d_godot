@@ -20,72 +20,9 @@ signal dialog_state_changed(is_active)
 @export var light_crystal_resource: Resource
 @export var iron_resource: Resource
 
-# === НАСТРОЙКИ UI В ИНСПЕКТОРЕ ===
-# Настройки счётчика жизней
-@export_group("Player UI")
-@export var lives_font_size: int = 24
-@export var lives_font: Font = null
-
-# Настройки надписи Game Over
-@export_group("Game Over")
-@export var game_over_text: String = "ИГРА ОКОНЧЕНА!"
-@export var game_over_font: Font = null
-@export var game_over_alt_fonts: Array[Font] = []
-@export var game_over_font_size: int = 48
-@export var game_over_color: Color = Color.RED
-@export var game_over_offset_y: float = 0.0
-@export var game_over_offset_x: float = 0.0
-@export var game_over_shadow_color: Color = Color.BLACK
-@export var game_over_shadow_offset: Vector2 = Vector2(2, 2)
-@export var game_over_z_index: int = 50
-@export var font_size_multiplier: float = 1.5
-@export var custom_min_width: float = 600.0
-@export var custom_min_height: float = 100.0
-
-# Настройки уведомлений
-@export_group("Notifications")
-@export var notification_font: Font = preload("res://themes/pixi.ttf")
-@export var notification_font_color: Color = Color.WHITE
-@export var notification_vertical_offset: float = 10.0
-@export var notification_panel_color: Color = Color(0, 0, 0, 0.6)
-@export var notification_panel_padding: float = 5.0
-
-# Настройки подсказки инвентаря
-@export_group("Inventory")
-@export var inventory_hint_text: String = "Предмет добавлен! Нажмите 'I', чтобы открыть инвентарь."
-@export var inventory_hint_duration: float = 3.5
-@export var inventory_scene: PackedScene
-
-# Настройки уровней
-@export_group("Game Settings")
-@export var current_level: int = 1
-@export var total_levels: int = 4
-@export var max_lives: int = 3
-
 # === ИГРОВЫЕ ПЕРЕМЕННЫЕ ===
-var lives = 3
-var show_lives_ui = true
-var total_pickups = 0
-var collected_items: Array[ItemData] = []
-var collected_item_ids: Dictionary = {}
-var last_inventory_split_offset: int = 120
-var current_inventory_instance = null
-var inventory_hint_shown_this_level: bool = false
-var is_player_dead: bool = false
-var is_player_light_active: bool = false
-var current_level_is_dark: bool = false
-var is_dialog_active: bool = false  # Новый флаг для состояния диалога
 var needs_light_update: bool = false  # Флаг для обновления света после перезагрузки уровня
 var light_update_timer: Timer = null  # Таймер для обновления света
-
-# === ССЫЛКИ НА UI ЭЛЕМЕНТЫ ===
-@onready var lives_label = $LivesLabel
-@onready var notification_timer: Timer = $UILayer/NotificationTimer
-@onready var ui_layer: CanvasLayer = null
-var notification_panel: PanelContainer = null
-var notification_label: Label = null
-var game_over_label: Label = null
-var canvas_modulate: CanvasModulate = null
 
 # === КОМПОНЕНТЫ ИГРЫ ===
 var ui_manager: UIManager
@@ -96,10 +33,6 @@ var player_state_manager: PlayerStateManager
 # === ОСНОВНЫЕ ФУНКЦИИ ===
 func _ready():
 	add_to_group("game_manager")
-	
-	# Проверка загрузки сцены инвентаря
-	if not inventory_scene:
-		push_error("GameManager: Inventory scene is NOT loaded!")
 	
 	# Создаем и инициализируем компоненты
 	_initialize_components()
@@ -120,28 +53,6 @@ func _initialize_components():
 	if ui_manager_scene:
 		ui_manager = ui_manager_scene.instantiate()
 		add_child(ui_manager)
-		
-		# Передаем настройки Game Over в UI Manager
-		ui_manager.game_over_text = game_over_text
-		ui_manager.game_over_font = game_over_font
-		ui_manager.game_over_alt_fonts = game_over_alt_fonts
-		ui_manager.game_over_font_size = game_over_font_size
-		ui_manager.game_over_color = game_over_color
-		ui_manager.game_over_offset_x = game_over_offset_x
-		ui_manager.game_over_offset_y = game_over_offset_y
-		ui_manager.game_over_shadow_color = game_over_shadow_color
-		ui_manager.game_over_shadow_offset = game_over_shadow_offset
-		ui_manager.game_over_z_index = game_over_z_index
-		ui_manager.font_size_multiplier = font_size_multiplier
-		ui_manager.custom_min_width = custom_min_width
-		ui_manager.custom_min_height = custom_min_height
-		
-		# Передаем настройки уведомлений
-		ui_manager.notification_font = notification_font
-		ui_manager.notification_font_color = notification_font_color
-		ui_manager.notification_vertical_offset = notification_vertical_offset
-		ui_manager.notification_panel_color = notification_panel_color
-		ui_manager.notification_panel_padding = notification_panel_padding
 	else:
 		push_error("GameManager: UI Manager scene not set!")
 	
@@ -153,10 +64,6 @@ func _initialize_components():
 		# Устанавливаем ссылку на UI Manager
 		if ui_manager:
 			inventory_system.setup_ui_manager(ui_manager)
-		
-		# Устанавливаем сцену инвентаря
-		if inventory_scene:
-			inventory_system.inventory_scene = inventory_scene
 	else:
 		push_error("GameManager: Inventory System scene not set!")
 	
@@ -265,6 +172,44 @@ func _on_next_level_requested():
 # === ПУБЛИЧНЫЕ МЕТОДЫ ===
 # Эти методы используют соответствующие системы
 
+# Свойство для обратной совместимости
+var ui_layer: CanvasLayer:
+	get:
+		if ui_manager:
+			return ui_manager.get_ui_layer()
+		return null
+
+# Свойство для обратной совместимости
+var last_inventory_split_offset: int:
+	get:
+		if inventory_system:
+			return inventory_system.last_inventory_split_offset
+		return 120
+	set(value):
+		if inventory_system:
+			inventory_system.last_inventory_split_offset = value
+
+# Свойство для обратной совместимости
+var collected_item_ids: Dictionary:
+	get:
+		if inventory_system:
+			return inventory_system.collected_item_ids
+		return {}
+
+# Свойство для обратной совместимости
+var is_player_light_active: bool:
+	get:
+		if player_state_manager:
+			return player_state_manager.is_player_light_active
+		return false
+
+# Свойство для обратной совместимости
+var is_player_dead: bool:
+	get:
+		if player_state_manager:
+			return player_state_manager.is_player_dead()
+		return false
+
 # --- Управление жизнями ---
 func decrease_lives() -> bool:
 	if player_state_manager:
@@ -293,17 +238,6 @@ func set_current_level(level_num: int):
 
 func request_next_level():
 	next_level_requested.emit()
-
-# --- Управление инвентарем ---
-func add_item_to_inventory(item_data: ItemData) -> bool:
-	if inventory_system:
-		return inventory_system.add_item(item_data)
-	return false
-
-# Сохраняем для обратной совместимости
-func _on_item_collected(item_data: ItemData, _item_node: Node):
-	if inventory_system:
-		inventory_system.add_item(item_data)
 
 # --- Управление диалогами ---
 func set_dialog_active(active: bool):
@@ -335,16 +269,9 @@ func reset_game_state():
 		ui_manager.hide_game_over()
 
 # === ОБРАБОТКА ВВОДА ===
-func _unhandled_input(event):
-	if event.is_action_pressed("ui_inventory"):
-		if inventory_system:
-			if is_instance_valid(inventory_system.current_inventory_instance):
-				inventory_system.close_inventory()
-			else:
-				inventory_system.open_inventory()
-			# Помечаем ввод как обработанный
-			get_viewport().set_input_as_handled()
-	# Остальной ввод обрабатывается в соответствующих системах
+func _unhandled_input(_event):
+	# Обработка ввода делегирована соответствующим системам
+	pass
 
 func _process(_delta):
 	# Проверяем, нужно ли обновить свет после перезагрузки уровня
@@ -362,51 +289,18 @@ func mark_for_light_update():
 	
 # Обработчик таймера обновления света
 func _on_light_update_timer_timeout():
-	# Проверяем, темный ли это уровень
-	var is_dark_level = false
-	var level_controller = get_tree().get_first_node_in_group("level_controller")
-	if level_controller and level_controller.has_method("is_dark_level"):
-		is_dark_level = level_controller.is_dark_level
-	
-	# Проверяем наличие светового кристалла
-	var has_light_crystal = false
-	if inventory_system and light_crystal_resource:
-		has_light_crystal = inventory_system.has_item(light_crystal_resource.resource_path)
-	
 	# Обновляем состояние света через PlayerStateManager
 	if player_state_manager:
 		player_state_manager.update_player_light_state()
 	
-	# Дополнительная прямая проверка для надежности
-	if is_dark_level and has_light_crystal:
-		# Находим игрока и его свет
-		var player = get_tree().get_first_node_in_group("player")
-		if player and player.has_node("PointLight2D"):
-			var player_light = player.get_node("PointLight2D")
-			player_light.visible = true
-			player_light.enabled = true
-			
-			# Эффект включения света для визуальной обратной связи
-			var tween = create_tween()
-			tween.tween_property(player_light, "energy", 1.2, 0.3)
-			tween.tween_property(player_light, "energy", 1.0, 0.2)
-		else:
-			# Если игрок или свет не найден, попробуем снова через некоторое время
-			var retry_timer = get_tree().create_timer(0.2)
-			await retry_timer.timeout
-			
-			player = get_tree().get_first_node_in_group("player")
-			if player and player.has_node("PointLight2D"):
-				var player_light = player.get_node("PointLight2D")
-				player_light.visible = true
-				player_light.enabled = true
-				
-				var tween = create_tween()
-				tween.tween_property(player_light, "energy", 1.2, 0.3)
-				tween.tween_property(player_light, "energy", 1.0, 0.2)
-	
 	# Запрашиваем обновление от LevelController для дополнительной надежности
-	if level_controller:
+	var level_controller = get_tree().get_first_node_in_group("level_controller")
+	if level_controller and level_controller.has_method("_update_player_light"):
 		level_controller._update_player_light()
 	
 	light_update_timer.stop()
+
+# Делегирующий метод для обратной совместимости
+func _on_item_collected(item_data: ItemData, _item_node = null):
+	if inventory_system:
+		inventory_system.add_item(item_data)

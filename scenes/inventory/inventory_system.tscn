@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxw2dqkw7xv30"]
+[gd_scene load_steps=3 format=3 uid="uid://cxw2dqkw7xv30"]
 
 [ext_resource type="Script" path="res://scripts/inventory_system.gd" id="1_ug0md"]
- 
+[ext_resource type="PackedScene" uid="uid://bj2373uvdbvty" path="res://scenes/inventory_ui.tscn" id="2_jk1m1"]
+
 [node name="InventorySystem" type="Node"]
-script = ExtResource("1_ug0md") 
+script = ExtResource("1_ug0md")
+inventory_scene = ExtResource("2_jk1m1") 
