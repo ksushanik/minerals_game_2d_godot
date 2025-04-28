@@ -21,7 +21,7 @@ func _ready():
 	
 	if item_data != null and item_data is Resource and item_data.resource_path:
 		# Проверяем предмет через GameManager.collected_item_ids (для совместимости)
-		if game_manager.collected_item_ids.has(item_data.resource_path):
+		if game_manager.get_collected_item_ids().has(item_data.resource_path):
 			queue_free()
 			return
 			
@@ -36,7 +36,7 @@ func _ready():
 	if item_data != null and not item_collected.is_connected(game_manager._on_item_collected):
 		item_collected.connect(game_manager._on_item_collected)
 	
-	if game_manager and item_data and game_manager.collected_item_ids.has(self.name):
+	if game_manager and item_data and game_manager.get_collected_item_ids().has(self.name):
 		visible = false
 		var collision_shape = $CollisionShape2D as CollisionShape2D
 		if collision_shape:
@@ -51,7 +51,7 @@ func check_if_already_collected():
 	var already_collected = false
 	
 	# Проверка через GameManager.collected_item_ids (для совместимости)
-	if item_data.resource_path and game_manager.collected_item_ids.has(item_data.resource_path):
+	if item_data.resource_path and game_manager.get_collected_item_ids().has(item_data.resource_path):
 		already_collected = true
 		
 	# Проверка через InventorySystem

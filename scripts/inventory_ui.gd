@@ -95,7 +95,7 @@ func _on_item_selected(index: int):
 # Вызывается при нажатии кнопки "Закрыть"
 func _on_close_button_pressed():
 	if game_manager and h_split_container:
-		game_manager.last_inventory_split_offset = h_split_container.split_offset
+		game_manager.set_last_inventory_split_offset(h_split_container.split_offset)
 	
 	hide()
 	inventory_closed.emit()

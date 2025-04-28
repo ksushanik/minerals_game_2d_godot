@@ -22,14 +22,14 @@ func _ready():
 	if has_node("/root/GameManager"):
 		game_manager = get_node("/root/GameManager")
 		
-	if game_manager and game_manager.is_player_light_active and point_light:
+	if game_manager and game_manager.is_player_light_active() and point_light:
 		point_light.enabled = true
 
 func _physics_process(delta):
 	if not is_instance_valid(game_manager):
 		return
 
-	var player_is_dead = game_manager.is_player_dead
+	var player_is_dead = game_manager.is_player_dead()
 	if player_is_dead:
 		return
 
@@ -149,3 +149,29 @@ func set_input_enabled(enabled: bool):
 			tween.tween_property(animated_sprite, "modulate", Color(1, 1, 1, 1), 0.3)
 		else:
 			tween.tween_property(animated_sprite, "modulate", Color(0.8, 0.8, 0.8, 1), 0.3)
+
+# Метод для сброса состояния игрока при перезапуске игры
+func reset_state():
+	print("Player: Resetting player state")
+	is_player_dead = false
+	input_enabled = true
+	has_double_jumped = false
+	
+	# Сбрасываем скорость
+	velocity = Vector2.ZERO
+	
+	# Восстанавливаем коллизии
+	set_collision_layer_value(1, true)
+	set_collision_mask_value(1, true)
+	
+	# Проигрываем анимацию покоя
+	if animated_sprite:
+		animated_sprite.play("idle")
+		animated_sprite.modulate = Color(1, 1, 1, 1)
+	
+	# Проверяем, нужно ли включить свет
+	if game_manager and game_manager.is_player_light_active() and point_light:
+		point_light.enabled = true
+	else:
+		if point_light:
+			point_light.enabled = false

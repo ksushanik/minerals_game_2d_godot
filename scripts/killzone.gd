@@ -115,6 +115,11 @@ func _on_game_over():
 			# Даем небольшую задержку, чтобы анимация скрытия отработала
 			await get_tree().create_timer(0.4).timeout
 		
+		# Сбрасываем состояние игры перед переходом в главное меню
+		if game_manager and game_manager.has_method("reset_game_state"):
+			print("Killzone: Resetting game state before returning to main menu")
+			game_manager.reset_game_state()
+		
 		# Еще раз проверяем, что get_tree() валиден
 		if get_tree():
 			get_tree().change_scene_to_file("res://scenes/main_title.tscn")
@@ -151,8 +156,8 @@ func _update_player_light():
 		find_game_manager()
 	
 	# Обновляем состояние света
-	if game_manager and game_manager.player_state_manager:
-		game_manager.player_state_manager.update_player_light_state()
+	if game_manager and game_manager.player_facade:
+		game_manager.player_facade.update_player_light_state()
 		print("Killzone: Player light state updated successfully")
 	else:
-		print("Killzone: Could not update player light, GameManager or PlayerStateManager not found")
+		print("Killzone: Could not update player light, GameManager or PlayerFacade not found")

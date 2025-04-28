@@ -1,9 +1,5 @@
 extends Control
 
-# Сигналы
-signal start_game
-signal quit_game
-
 # Переменные
 var tween_running = false
 
@@ -19,6 +15,12 @@ func _ready():
 func _on_start_button_pressed():
 	if not tween_running:
 		tween_running = true
+		
+		# Сбрасываем состояние игры
+		var game_manager = get_tree().get_first_node_in_group("game_manager")
+		if game_manager and game_manager.has_method("reset_game_state"):
+			game_manager.reset_game_state()
+			print("Main Title: Resetting game state before starting new game")
 		
 		# Создаем эффект анимации перехода
 		var tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)

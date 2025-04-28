@@ -29,7 +29,7 @@ func apply_ui_settings():
 		if is_instance_valid(game_manager):
 			game_manager.set_lives_visibility(show_lives)
 			
-			if is_dark_level and game_manager.player_state_manager:
+			if is_dark_level:
 				var has_light_crystal = false
 				
 				if game_manager.inventory_system:
@@ -84,10 +84,10 @@ func set_dark_level(dark: bool):
 		cm.color = Color(0, 0, 0, 1) if dark else Color(1, 1, 1, 1)
 	
 	# Обновляем свет игрока, если это возможно
-	if game_manager and game_manager.player_state_manager:
+	if game_manager and game_manager.player_facade:
 		# Небольшая задержка, чтобы успели обновиться все значения
 		await get_tree().create_timer(0.1).timeout
-		game_manager.player_state_manager.update_player_light_state()
+		game_manager.player_facade.update_player_light_state()
 
 # Отдельная функция для обновления света игрока
 func _update_player_light():
@@ -95,8 +95,8 @@ func _update_player_light():
 	await get_tree().create_timer(0.3).timeout
 	
 	# Сначала проверяем через GameManager
-	if game_manager and game_manager.player_state_manager:
-		game_manager.player_state_manager.update_player_light_state()
+	if game_manager and game_manager.player_facade:
+		game_manager.player_facade.update_player_light_state()
 	
 	# Дополнительная прямая проверка для надежности
 	if is_dark_level:
