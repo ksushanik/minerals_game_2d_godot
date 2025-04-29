@@ -68,11 +68,6 @@ func _on_body_entered(body):
 	if not body.is_in_group("player") or item_data == null or not game_manager:
 		return
 		
-	if item_data.resource_path == "res://resources/items/light_crystal.tres":
-		var player_light = body.get_node_or_null("PlayerLight") 
-		if player_light and player_light is Light2D:
-			player_light.enabled = true
-			
 	item_collected.emit(item_data, self)
 	visible = false
 	

@@ -321,7 +321,7 @@ limit_smoothed = true
 position_smoothing_enabled = true
 
 [node name="Professor" parent="." instance=ExtResource("8_ttpfv")]
-position = Vector2(277, 52)
+position = Vector2(588, -90)
 dialog_data = ExtResource("9_k701d")
 success_dialog_data = ExtResource("10_fqvrn")
 metadata/_edit_group_ = true

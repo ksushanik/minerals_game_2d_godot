@@ -62,6 +62,9 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
+[node name="ItemNameLabel" type="Label" parent="MarginContainer/VBoxContainer/HSplitContainer/DescriptionPanel/MarginContainer"]
+layout_mode = 2
+
 [node name="DescriptionDisplay" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HSplitContainer/DescriptionPanel/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 3

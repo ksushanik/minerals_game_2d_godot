@@ -65,4 +65,17 @@ func close_inventory():
 		
 func reset_inventory():
 	if inventory_system:
-		inventory_system.clear_inventory() 
+		inventory_system.clear_inventory()
+
+# <<< НОВЫЕ МЕТОДЫ ДЛЯ РАБОТЫ С ВЫБРАННЫМ ПРЕДМЕТОМ >>>
+func set_selected_inventory_item(item_data: ItemData):
+	if inventory_system:
+		inventory_system.set_selected_item(item_data)
+
+func get_selected_inventory_item() -> ItemData:
+	if inventory_system:
+		return inventory_system.get_selected_item()
+	return null
+
+# === СТАРЫЕ МЕТОДЫ ===
+# ... (если есть) 

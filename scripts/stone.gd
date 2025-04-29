@@ -20,9 +20,7 @@ func _ready():
 	
 	if has_node("/root/GameManager"):
 		game_manager = get_node("/root/GameManager")
-		if !game_manager.item_collected_signal.is_connected(_on_player_collected_item):
-			game_manager.item_collected_signal.connect(_on_player_collected_item)
-		
+	
 	if physics_material_override:
 		original_friction = physics_material_override.friction
 	else:
@@ -33,7 +31,6 @@ func _ready():
 		original_friction = 1.0
 	
 	add_to_group("pushable_stone")
-	check_and_enable_push()
 	
 	# Проверяем, нужно ли восстановить сохраненную позицию
 	restore_stone_position()
@@ -48,41 +45,20 @@ func restore_stone_position():
 			global_position = saved_position
 			is_position_saved = true
 
-func check_and_enable_push():
-	if not game_manager:
-		return
-
-	var iron_resource = load(IRON_RESOURCE_PATH)
-	if not iron_resource:
-		can_be_pushed = false
-		return
+# Новый метод для внешнего управления
+func set_pushable(is_active: bool):
+	if can_be_pushed == is_active:
+		return # Состояние не изменилось
 		
-	var has_iron = false
+	can_be_pushed = is_active
 	
-	if game_manager.inventory_system:
-		var inventory_items = game_manager.inventory_system.get_all_items()
-		
-		for item in inventory_items:
-			if item.resource_path == iron_resource.resource_path or item.item_name == iron_resource.item_name:
-				has_iron = true
-				break
-	else:
-		# Каменьям не нужно логировать ошибки
-		pass
-	
-	var was_pushable = can_be_pushed 
-	
-	if has_iron:
-		can_be_pushed = true
-		if (not was_pushable or physics_material_override.friction != original_friction * friction_reduction_factor) and physics_material_override:
+	if physics_material_override:
+		if can_be_pushed:
 			physics_material_override.friction = original_friction * friction_reduction_factor
-	else:
-		can_be_pushed = false
-		if was_pushable and physics_material_override:
+			print("Stone ", persistent_id, ": Push enabled, friction reduced.")
+		else:
 			physics_material_override.friction = original_friction
-			
-func _on_player_collected_item(_item_data: ItemData):
-	check_and_enable_push()
+			print("Stone ", persistent_id, ": Push disabled, friction restored.")
 
 # Проверяем движение камня и сохраняем позицию
 func _integrate_forces(state):

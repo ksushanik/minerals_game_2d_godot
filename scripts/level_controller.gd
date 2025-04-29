@@ -97,32 +97,3 @@ func _update_player_light():
 	# Сначала проверяем через GameManager
 	if game_manager and game_manager.player_facade:
 		game_manager.player_facade.update_player_light_state()
-	
-	# Дополнительная прямая проверка для надежности
-	if is_dark_level:
-		# Проверяем наличие светового кристалла
-		var has_light_crystal = false
-		if game_manager and game_manager.inventory_system and game_manager.light_crystal_resource:
-			has_light_crystal = game_manager.inventory_system.has_item(
-				game_manager.light_crystal_resource.resource_path
-			)
-			
-			# Если есть кристалл, включаем свет
-			if has_light_crystal:
-				# Находим игрока и его свет
-				var player = get_tree().get_first_node_in_group("player")
-				if player and player.has_node("PointLight2D"):
-					var player_light = player.get_node("PointLight2D")
-					player_light.visible = true
-					player_light.enabled = true
-					
-					# Эффект включения света
-					var tween = create_tween()
-					tween.tween_property(player_light, "energy", 1.2, 0.3)
-					tween.tween_property(player_light, "energy", 1.0, 0.2)
-				else:
-					print("LevelController: PointLight2D node not found on player")
-		else:
-			print("LevelController: Cannot check for light crystal, missing references")
-	else:
-		print("LevelController: This is not a dark level")

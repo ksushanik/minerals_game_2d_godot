@@ -11,6 +11,7 @@ class_name ItemData
 @export var dialogue_pages: Array[String] = []
 
 # Можно добавить другие свойства в будущем, например:
-@export var item_icon: Texture2D
+@export var item_icon: Texture2D = null
+@export var duration: float = 0.0 # 0 = бесконечно/пассивно
 # @export var stackable: bool = false
 # @export var value: int = 0 

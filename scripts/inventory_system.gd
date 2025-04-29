@@ -20,6 +20,7 @@ var collected_item_ids: Dictionary = {}
 var current_inventory_instance = null
 var last_inventory_split_offset: int = 120
 var inventory_hint_shown_this_level: bool = false
+var selected_item: ItemData = null
 
 # === ССЫЛКИ НА ВНЕШНИЕ КОМПОНЕНТЫ ===
 var ui_manager: UIManager
@@ -115,4 +116,14 @@ func _unhandled_input(event):
 			close_inventory()
 		else:
 			open_inventory()
-		get_viewport().set_input_as_handled() 
+		get_viewport().set_input_as_handled()
+
+# <<< НОВЫЕ МЕТОДЫ ДЛЯ ВЫБОРА ПРЕДМЕТА >>>
+func set_selected_item(item_data: ItemData):
+	selected_item = item_data
+	# Можно добавить сигнал, если нужно реагировать на изменение выбора
+	# signal selected_item_changed(item_data)
+	# selected_item_changed.emit(item_data)
+
+func get_selected_item() -> ItemData:
+	return selected_item 

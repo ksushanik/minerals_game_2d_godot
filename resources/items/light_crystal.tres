@@ -9,3 +9,4 @@ item_name = "Светящийся кристалл"
 item_description = "Этот кристалл излучает мягкий свет, способный разогнать тьму."
 dialogue_pages = Array[String](["Стало светлее!"])
 item_icon = ExtResource("2_light_crystal_icon")
+duration = 10.0

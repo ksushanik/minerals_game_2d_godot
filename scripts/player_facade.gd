@@ -34,6 +34,7 @@ func setup(player_state: PlayerStateManager, ui: UIManager):
 	# Подключаем сигналы
 	if player_state_manager:
 		player_state_manager.dialog_state_changed.connect(_on_dialog_state_changed)
+		player_state_manager.request_player_flash.connect(_on_player_flash_requested)
 		
 	# Если PlayerStateManager не был полностью инициализирован, инициализируем его
 	initialize_player_state_manager()
@@ -59,6 +60,12 @@ func initialize_player_state_manager():
 # === ОБРАБОТЧИКИ СИГНАЛОВ ===
 func _on_dialog_state_changed(is_active: bool):
 	dialog_state_changed.emit(is_active)
+
+# <<< НОВЫЙ ОБРАБОТЧИК ДЛЯ МЕРЦАНИЯ >>>
+func _on_player_flash_requested():
+	var player = get_tree().get_first_node_in_group("player")
+	if player and player.has_method("start_flashing"):
+		player.start_flashing()
 
 # === ПУБЛИЧНЫЕ МЕТОДЫ ===
 func decrease_lives() -> bool:

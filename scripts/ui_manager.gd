@@ -104,7 +104,7 @@ func _create_lives_label():
 	lives_label.name = "LivesLabel"
 	lives_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	lives_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-	lives_label.text = "Lives: 3"
+	lives_label.text = "Жизни: 3"
 	lives_label.add_theme_font_size_override("font_size", lives_font_size)
 	
 	if lives_font:
@@ -229,7 +229,7 @@ func _create_game_over_sound():
 # === ПУБЛИЧНЫЕ МЕТОДЫ ===
 func update_lives_display(lives: int):
 	if lives_label:
-		lives_label.text = "Lives: " + str(lives)
+		lives_label.text = "Жизни: " + str(lives)
 		
 		# Меняем цвет в зависимости от количества жизней
 		if lives <= 1:

@@ -9,3 +9,4 @@ item_name = "Железо"
 item_description = "Тяжелый, но прочный элемент. Возможно, он придаст вам сил, чтобы сдвинуть что-то тяжелое."
 dialogue_pages = Array[String]([])
 item_icon = ExtResource("2_iron_icon")
+duration = 3.0

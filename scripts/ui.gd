@@ -69,7 +69,7 @@ func update_lives_display():
 		lives_label.visible = game_manager.show_lives_ui
 		
 		# Обновляем текст количества жизней
-		lives_label.text = "Lives: " + str(game_manager.lives)
+		lives_label.text = "Жизни: " + str(game_manager.lives)
 		
 		# Обновляем цвет в зависимости от количества жизней
 		if game_manager.lives <= 1:
@@ -107,7 +107,7 @@ func update_ui():
 			# Показываем/скрываем в зависимости от настроек GameManager
 			lives_label.visible = game_manager.show_lives_ui
 			# Обновляем текст
-			lives_label.text = "Lives: " + str(game_manager.lives)
+			lives_label.text = "Жизни: " + str(game_manager.lives)
 			# Обновляем цвет
 			if game_manager.lives <= 1:
 				lives_label.add_theme_color_override("font_color", Color(0.8, 0.2, 0.2, 1))

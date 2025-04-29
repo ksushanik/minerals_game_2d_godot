@@ -8,6 +8,7 @@ signal lives_changed(lives)
 signal game_over
 signal dialog_state_changed(is_active)
 signal player_light_state_changed(is_active)
+signal request_player_flash
 
 # === КОНСТАНТЫ ===
 enum PlayerState {
@@ -97,6 +98,9 @@ func decrease_lives() -> bool:
 	
 	lives_changed.emit(lives)
 	
+	# <<< ЗАПРОС МЕРЦАНИЯ >>>
+	request_player_flash.emit()
+	
 	if lives <= 0:
 		set_player_state(PlayerState.DEAD)
 		
@@ -157,27 +161,50 @@ func get_dialog_active() -> bool:
 func update_player_light_state():
 	# Нужен доступ к инвентарю для проверки наличия кристалла
 	if not inventory_system or not level_system:
+		print("PlayerStateManager: Cannot update light state - missing InventorySystem or LevelSystem.")
 		return
 		
+	var light_crystal_res_path = ""
+	if light_crystal_resource:
+		light_crystal_res_path = light_crystal_resource.resource_path
+	else:
+		print("PlayerStateManager: light_crystal_resource is not set!")
+		# Попробуем использовать стандартный путь как запасной вариант
+		light_crystal_res_path = "res://resources/items/light_crystal.tres"
+
 	# Проверяем наличие кристалла и темноты уровня
-	var has_light_crystal = inventory_system.has_item(light_crystal_resource.resource_path)
+	var has_light_crystal = inventory_system.has_item(light_crystal_res_path)
 	var is_dark_level = level_system.is_level_dark()
 	
-	# Включаем или выключаем свет на персонаже
-	var should_enable_light = has_light_crystal and is_dark_level
+	# <<< ИЗМЕНЕННАЯ ЛОГИКА: ВЫКЛЮЧАЕМ СВЕТ, ЕСЛИ УСЛОВИЯ НЕ ВЫПОЛНЕНЫ, НО НЕ ВКЛЮЧАЕМ >>>
+	var should_disable_light = not has_light_crystal or not is_dark_level
 	
-	if should_enable_light != is_player_light_active:
-		is_player_light_active = should_enable_light
+	if should_disable_light and is_player_light_active:
+		# Если свет активен, но не должен быть (нет кристалла или не темно), выключаем
+		is_player_light_active = false
 		
-		# Найти игрока и включить/выключить свет
 		var player = get_tree().get_first_node_in_group("player")
-		if player:
-			if is_player_light_active and player.has_method("enable_light"):
-				player.enable_light()
-			elif not is_player_light_active and player.has_method("disable_light"):
-				player.disable_light()
-		
+		if player and player.has_method("disable_light"):
+			print("PlayerStateManager: Automatically disabling light (no crystal or not dark).")
+			player.disable_light()
+			
 		player_light_state_changed.emit(is_player_light_active)
+		
+	# Важно: мы больше НЕ включаем свет здесь автоматически.
+	# Включение происходит только через activate_selected_item_ability в player.gd.
+	
+	# Оставшаяся часть - проверка, если is_player_light_active стал false
+	elif not is_player_light_active and not should_disable_light:
+		# Это условие может возникнуть, если игрок вручную выключил свет,
+		# но технически он должен быть активен (есть кристалл и темно).
+		# В этом случае мы ничего не делаем, оставляя ручное управление.
+		pass
+	# elif is_player_light_active and not should_disable_light:
+	# 	# Если свет активен и должен быть активен - ничего не делаем
+	# 	pass
+	# elif not is_player_light_active and should_disable_light:
+	# 	# Если свет не активен и не должен быть активен - ничего не делаем
+	# 	pass
 
 # === ВНУТРЕННИЕ МЕТОДЫ ===
 func _toggle_player_input(enable: bool):
