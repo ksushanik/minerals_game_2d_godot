@@ -97,4 +97,3 @@ func _update_player_light():
 	# Сначала проверяем через GameManager
 	if game_manager and game_manager.player_facade:
 		game_manager.player_facade.update_player_light_state()
-

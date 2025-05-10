@@ -17,3 +17,6 @@ mono_crash.*.json
 # Editor-specific folders
 /.cursor/
 /.vscode/
+
+# Build output
+/build/

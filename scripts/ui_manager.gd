@@ -144,6 +144,8 @@ func _create_notification_panel():
 	notification_label.name = "NotificationLabel"
 	notification_label.text = ""
 	notification_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	notification_label.autowrap_mode = TextServer.AUTOWRAP_WORD
+	notification_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
 	# Стиль текста - используем шрифт PIXY или другой шрифт из темы
 	var font_to_use = _select_notification_font()

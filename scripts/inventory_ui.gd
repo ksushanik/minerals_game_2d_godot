@@ -22,6 +22,7 @@ signal inventory_closed
 @onready var h_split_container = $MarginContainer/VBoxContainer/HSplitContainer
 
 var game_manager = null
+var use_item_hint_label: Label # <--- ДОБАВЛЕНО: Переменная для метки
 
 # Словарь для хранения полных описаний
 # var item_details = {} # Больше не нужно, берем из ItemData
@@ -36,9 +37,46 @@ func _ready():
 		return
 	else:
 		item_list.item_selected.connect(_on_item_selected)
+		item_list.fixed_icon_size = Vector2i(64, 64)
 
 	if has_node("/root/GameManager"):
 		game_manager = get_node("/root/GameManager")
+
+	# <--- ДОБАВЛЕНО: Создание и настройка метки-подсказки --->
+	use_item_hint_label = Label.new()
+	use_item_hint_label.name = "UseItemHintLabel"
+	use_item_hint_label.text = "Нажмите [E] для использования"
+	# Попытаемся использовать тот же шрифт и размер, что и у description_display или из UIManager
+	if description_display and description_display.has_theme_font("font"):
+		use_item_hint_label.add_theme_font_override("font", description_display.get_theme_font("font"))
+		use_item_hint_label.add_theme_font_size_override("font_size", description_display.get_theme_font_size("font_size"))
+	elif game_manager and game_manager.ui_manager and game_manager.ui_manager.notification_font:
+		# Используем шрифт уведомлений как запасной вариант
+		use_item_hint_label.add_theme_font_override("font", game_manager.ui_manager.notification_font)
+		use_item_hint_label.add_theme_font_size_override("font_size", game_manager.ui_manager.notification_font_size)
+
+	if description_display and description_display.has_theme_color("font_color"):
+		use_item_hint_label.add_theme_color_override("font_color", description_display.get_theme_color("font_color"))
+	elif game_manager and game_manager.ui_manager:
+		use_item_hint_label.add_theme_color_override("font_color", game_manager.ui_manager.notification_font_color)
+	else:
+		use_item_hint_label.add_theme_color_override("font_color", Color.WHITE) # Цвет по умолчанию
+	
+	use_item_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER # Выравнивание по центру
+	use_item_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD # Перенос слов
+	use_item_hint_label.visible = false # По умолчанию не видна
+	use_item_hint_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL # <--- ИЗМЕНЕНО (было SIZE_FILL)
+	use_item_hint_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER # <--- ИЗМЕНЕНО (было SIZE_SHRINK_BEGIN)
+
+	# Добавляем метку в главный VBoxContainer инвентаря
+	var main_vbox_container = get_node_or_null("MarginContainer/VBoxContainer") # <--- ИЗМЕНЕНО
+	if main_vbox_container: # <--- ИЗМЕНЕНО
+		main_vbox_container.add_child(use_item_hint_label) # <--- ИЗМЕНЕНО
+		# Можно добавить немного отступа сверху, если нужно, через theme_override "separation" для VBoxContainer
+		# или обернуть use_item_hint_label в свой PanelContainer для отступов.
+	else: # <--- ДОБАВЛЕНО
+		print("InventoryUI Error: Could not find MarginContainer/VBoxContainer to add hint label.") # <--- ДОБАВЛЕНО
+	# <--- КОНЕЦ ИЗМЕНЕНИЙ --->
 
 # Функция для установки начального смещения разделителя
 func set_initial_split_offset(offset: int):
@@ -105,6 +143,7 @@ func display_inventory(collected_items: Array[ItemData]): # Тип измене�
 # Вызывается при выборе элемента в ItemList
 func _on_item_selected(index: int):
 	if description_display == null or item_name_label == null:
+		if use_item_hint_label: use_item_hint_label.visible = false # <--- ДОБАВЛЕНО
 		return
 	
 	var selected_item_data = item_list.get_item_metadata(index)
@@ -116,6 +155,8 @@ func _on_item_selected(index: int):
 		var description_text = selected_item_data.item_description if selected_item_data.item_description else "(Описание не задано)"
 		description_display.text = description_text
 		
+		if use_item_hint_label: use_item_hint_label.visible = true # <--- ДОБАВЛЕНО
+
 		# <<< СОХРАНЯЕМ ВЫБРАННЫЙ ПРЕДМЕТ В InventorySystem >>>
 		if game_manager and game_manager.inventory_facade:
 			game_manager.inventory_facade.set_selected_inventory_item(selected_item_data)
@@ -123,6 +164,8 @@ func _on_item_selected(index: int):
 	else:
 		item_name_label.text = ""
 		description_display.text = "Ошибка: Не удалось получить данные для выбранного элемента."
+		if use_item_hint_label: use_item_hint_label.visible = false # <--- ДОБАВЛЕНО
+
 		# <<< Сбрасываем выбранный предмет, если данные некорректны >>>
 		if game_manager and game_manager.inventory_facade:
 			game_manager.inventory_facade.set_selected_inventory_item(null)

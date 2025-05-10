@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://21bniw2qrb15" path="res://assets/sprites/minerals/cristals_gray.png" id="2_iron_coin_tex"]
 [ext_resource type="Resource" uid="uid://d4e5f6a7b8da" path="res://resources/items/iron.tres" id="3_iron_resource"]
 
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_iron"]
 radius = 15.0
 
@@ -53,7 +52,6 @@ script = ExtResource("1_iron_coin_script")
 item_data = ExtResource("3_iron_resource")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_iron_coin_tex")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -65,4 +63,4 @@ libraries = {
 }
 autoplay = "idle"
 
-[connection signal="body_entered" from="." to="." method="_on_body_entered"] 
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

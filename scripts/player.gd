@@ -306,7 +306,7 @@ func activate_selected_item_ability():
 		# <<< ПРОВЕРКА НАХОЖДЕНИЯ В ЗОНЕ УСИЛЕНИЯ ПРЫЖКА >>>
 		if is_in_jump_boost_zone():
 			var base_jump_velocity = DEFAULT_JUMP_VELOCITY
-			var boost_factor = 1.8 # TODO: Получить из ItemData или Зоны?
+			var boost_factor = 1.8
 			var boosted_jump_velocity = base_jump_velocity * boost_factor
 			
 			if abs(JUMP_VELOCITY - boosted_jump_velocity) > 0.1:
