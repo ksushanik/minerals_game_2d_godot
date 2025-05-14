@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dqkmubg661tlg"]
 
-[ext_resource type="Script" path="res://scenes/effects/confetti_effect.gd" id="1_xu823"]
+[ext_resource type="Script" path="res://scripts/effects/confetti_effect.gd" id="1_xu823"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cifs5"]
 particle_flag_disable_z = true

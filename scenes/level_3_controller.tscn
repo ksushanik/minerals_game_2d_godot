@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://c03tntspjn841"]
+
+[ext_resource type="Script" path="res://scripts/level_3_controller.gd" id="1_lw3h4"]
+
+[node name="Level3Controller" type="Node"]
+script = ExtResource("1_lw3h4")
+is_dark_level = true 
